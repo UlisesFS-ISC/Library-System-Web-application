@@ -18,25 +18,33 @@
 
         <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,700,900' rel='stylesheet' type='text/css'>
 		<script src="js/jquery.js"></script>
+		<script src="js/googleMap.js"></script>
 		<script src="js/dataTables.js"></script>
-		<script src="js/booksTable.js"></script>
-		
 		<script src="js/bootstrap.js"></script>		
 		<script src="js/dropzone.js"></script>
-  		<script src="js/booksDropzone.js"></script>
+		
+		<script src="js/MainController.js"></script>
+		<script src="js/Services.js"></script>
+		
+		<script src="js/booksTable.js"></script>
+		<script src="js/memberTable.js"></script>
+		<script src="js/booksDropzone.js"></script>
+		
+  		
 		<script src="js/modernizr-2.6.2.min.js"></script>
-
+		
 		
 		<link rel="stylesheet" href="css/bootstrap.css">
 		<link rel="stylesheet" href="css/jquery.dataTables.min.css">
 		<link rel="stylesheet" href="css/dataTables.bootstrap.min.css">
 		<link rel="stylesheet" href="css/dropzone.css">
 		<link rel=stylesheet href="css/maincontainer.css">
+		<link rel="stylesheet" href="css/animations.css">
 		<link href="css/font-awesome.css" rel="stylesheet">
         <link href="css/style.default.css" rel="stylesheet" id="theme-stylesheet">
 		<link rel="shortcut icon" href="favicon.png">
-
-      
+		<link rel='stylesheet' href="css/googleMap.css">
+        
 
 
     </head>
@@ -46,7 +54,7 @@
 
         <!--  NAVBAR -->
 
-        <div class="navbar navbar-default navbar-fixed-top load-in one" role="navigation" id="navbar">
+        <div class="navbar navbar-default navbar-fixed-top load-in" role="navigation" id="navbar">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -58,14 +66,20 @@
                     <a class="navbar-brand scrollTo" href="#intro">Library</a>
                 </div>
 
-                <div class="navbar-collapse collapse" id="navigation">
+                <div class="navbar-collapse collapse"  id="navigation">
 
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="active"><a id="loadbooks" href="#books">Books</a>
+                        <li class="active tab" data-tab="books-container"><a href="#Books">Books</a>
                         </li>
-                        <li><a href="#members">Member Registration</a>
+                        <li class="tab" data-tab="register-container" id="register-tab-button"><a href="#Register">Register</a>
                         </li>
-                        <li><a href="#about">About us</a>
+						<li class="tab" data-tab="login-container" id="login-tab-button"><a href="#Login">Login</a>
+                        </li>
+						<li class="tab hide" id="logout-tab-button"><a href="">Log-Out</a>
+                        </li>
+						<li class="tab hide" data-tab="rentals-container" id="rental-tab-button"><a href="#Rentals">Check rentals</a>
+                        </li>
+                        <li class="tab" data-tab="about-container"><a href="#About">About</a>
                         </li>
                     </ul>
                 </div>
@@ -78,10 +92,10 @@
 
         <div id="all">
 
-            <div id="intro" class="clearfix">
-                <div class="item">
-                    <div class="container">
-                        <div class="row">
+            <div id="intro" class="clearfix load-in two" >
+                <div class="item" >
+                    <div class="container" >
+                        <div class="row" >
 
 							<div class="container" >
 
@@ -98,16 +112,16 @@
 									<div class="modal-body" style="padding:40px 50px;">
 										  <form role="form" >
 												<div class="form-group">
-												  <input type="text" class="form-control" id="Title" placeholder="Enter Title" required>
+												  <input type="text" class="form-control books" id="Title" placeholder="Enter Title" required>
 												</div>
 												<div class="form-group">
-												  <input type="text" class="form-control" id="Author" placeholder="Enter Author" required>
+												  <input type="text" class="form-control books" id="Author" placeholder="Enter Author" required>
 												</div>
 												<div class="form-group">
 												  <textarea name="Description" id="Description" class="formTextArea" placeholder="Enter description"></textarea>
 												</div>
 												<div class="form-group">
-												 <input type="number" min="1" class="form-control" id="Pages" placeholder="Enter Pages" required>
+												 <input type="number" min="1" class="form-control books" id="Pages" placeholder="Enter Pages" required>
 												 <input type="hidden" id="modal-form-id" value="0" >
 												</div>
 												<div id="uploadme" class="dropzone"></div>
@@ -120,7 +134,7 @@
 								  </div>
 								</div>
 							  </div>
-								<!-- Modal content-->
+								<!-- Form Modal content-->
 
 								<!-- Alert Modal-->
 								<div class="modal fade" id="alertModal" role="dialog">
@@ -137,15 +151,37 @@
 									  </div>
 									</div>
 								</div>
-								<!-- Modal content-->
+								<!-- Alert Modal content-->
+								
+								<!-- Map Modal-->
+									<div class="modal fade" id="adressModal" role="dialog" style="height:100%;">
+											<div class="modal-dialog" style="height:100%;">		
+											  <!-- Modal content-->
+											  <div class="modal-content" style="height:100%;">
+												<div class="modal-header" style="padding:35px 50px;" >
+													<h4 id="modal-headline">New member's address</h4>
+												  <button type="button" class="close" data-dismiss="modal">&times;</button>
+												</div>
+												<div class="modal-body" style="padding:40px 50px; height:70%;">
+																  <div id="map"></div>
+															  <input id="pac-input" class="controls" type="text"
+												placeholder="Enter a location">
+												</div>
+											  </div>
+											</div>
+									</div>
 
-								 <div class="row" id="loadContainer">
-									<!-- Table content-->
-									<div class="jumbotron jumbotron-responsive  col-md-offset-4 load-in three">
+										<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQ4FGvG4iWHaTgG8KNsMo9Fz7me4wsC2o&signed_in=true&libraries=places&callback=initMap"
+											async defer></script>
+								<!-- Map Modal content-->
+								
+								<!-- Table content-->
+								 <div class="row active tab-content" id="books-container">	
+									<div class="jumbotron col-md-offset-4 jumbotron-responsive load-in" >
 										<div class="row">
-											<button type="button" id="book-modal-button" class="btn btn-sm btn-success btn-lg" data-toggle="modal" data-target="#myModal">Insert Book</button>
+											<button type="button" id="book-modal-button" class="btn btn-sm btn-success btn-lg hidden" data-toggle="modal" data-target="#myModal">Insert Book</button>
 										</div>
-										<div class=" row table table-responsive">
+										<div class="row table table-responsive">
 											<table id="example" class="table-hover table-bordered display nowrap compact"  cellspacing="0" width="100%">
 											<thead>
 												<tr>
@@ -154,8 +190,13 @@
 													<th>Author</th>
 													<th>Pages</th>
 													<th>Cover</th>
-													<th>Edit</th>
-													<th>Delete</th>
+													<th >Availability</th>
+													<th>Take</th>
+													<th >Edit</th>
+													<th >Delete</th>													
+													<th >Set Av</th>							
+													
+													
 												</tr>
 											</thead>
 											<tfoot>
@@ -165,15 +206,123 @@
 													<th>Author</th>
 													<th>Pages</th>
 													<th class="hidden">Cover</th>
+													<th class="hidden">Availability</th>
+													<th class="hidden">Take</th>
 													<th class="hidden">Delete</th>
 													<th class="hidden">Edit</th>
+													<th class="hidden">Set Av</th>										
+													
+													
 												</tr>
 											</tfoot>
 										</table>
 										</div>
 									</div>
-									<!-- Table content-->
 								</div>
+								<!-- Table content-->
+								
+								
+								<!-- Register content-->
+								 <div class="row tab-content" id="register-container">	
+									<div class=" jumbotron col-md-offset-4 jumbotron-responsive load-in ">
+										<h1 class= load-in two>Register</h1>	  
+										 <form role="form" >
+											  <div class="form-group ">
+												<label for="First" class="control-label">Member's Email and Name</label>
+												<input type="email" class="form-control register" id="Email" placeholder="Enter Email" required>
+												<input type="text" class="form-control register" id="FirstName" placeholder="Enter First Name" required>
+												<input type="text" class="form-control register" id="LastName" placeholder="Enter Last Name" required>
+
+												<label for="Password" class="control-label">Password</label>  
+												<input type="password"  class="form-control register" minlength=8 id="Password" placeholder="Enter Password" required>
+												<input type="password"  class="form-control register" id="confPass" placeholder="Confirm Password" required>
+											 </div>
+											  <div class="form-group ">
+												<label  class="control-label">Contact information</label> 
+												<input type="number" class="form-control register" id="Phone" minlength=10 placeholder="Enter Phone-number" required>
+												<input type="text" class="form-control register" id="Street" placeholder="Enter street" required>
+												<input type="text" class="form-control register" id="City" placeholder="Enter city" required>
+												<input type="text" class="form-control register" id="State" placeholder="Enter State" required>
+												<input type="text" class="form-control register" id="PostalCode" placeholder="Enter Postal Code" required>
+												<button type="button" id="map-modal-button" class="btn btn-sm btn-success btn-lg" data-toggle="modal" data-target="#adressModal">Set address with Maps</button>
+											  </div>
+											 
+											  <button disabled id="registerBtn" class="btn btn-success btn-block "  style=""><span class="glyphicon glyphicon-edit"></span>Sign-Up</button>
+										 </form>
+
+
+									</div>
+									 
+								</div>
+								<!-- Register content-->
+								
+								
+								<!-- Member content-->
+								 <div class="row tab-content" id="login-container">	
+											<div class="jumbotron col-md-offset-4 jumbotron-responsive load-in ">
+												<h1 class= load-in>Log-in</h1>						
+												 <form role="form" >
+														  <div class="form-group row">
+															<label for="First" class="control-label">Member's Email</label>
+															<input type="email" class="form-control login" id="LogEmail" placeholder="Enter User's email" required>
+
+															<label for="Password" class="control-label">Password</label>  
+															<input type="password" minlength=8 class="form-control login" id="LogPassword" placeholder="Enter Password" required>
+														 </div>
+
+														  <button disabled  id="loginBtn" class="btn btn-success btn-block " style=""><span class="glyphicon glyphicon-edit"></span>Log-in</button>
+												 </form>
+											</div>
+								</div>
+								<!-- Member content-->
+								
+								
+								<!-- about content-->
+								 <div class="row tab-content  load-in" id="about-container">										 
+											<h1 class= load-in one>Library book inventory system</h1>
+											<p class="message">Developed by Ulises Fajardo, check out my projects at my git-hub page.
+												<a href="https://github.com/UlisesFS-ISC" class="external twitter" ><i class="fa fa-github"></i></a>
+											</p>
+								</div>
+								<!-- about content-->
+								
+								<!-- hidden member  table-->
+								 <div class="row  tab-content" id="rentals-container">	
+									<div class="jumbotron col-md-offset-4 jumbotron-responsive load-in" >
+										<button type="button" id="logout-button" class="btn btn-sm btn-success btn-lg" >Log-Out </button>
+										<div class=" row table table-responsive">
+											<table id="memberTable" class="table-hover table-bordered display nowrap compact"  cellspacing="0" width="100%">
+											<thead>
+												<tr>
+													<th>ID_Rental</th>
+													<th>ID_Book</th>
+													<th>Title</th>
+													<th>RentalDate</th>
+													<th>Cover</th>
+													<th>DeadLine</th>
+													<th>Return</th>
+													
+													
+												</tr>
+											</thead>
+											<tfoot>
+												<tr>
+													<th>ID_Rental</th>
+													<th>ID_Book</th>
+													<th>Title</th>
+													<th>RentalDate</th>
+													<th>Cover</th>
+													<th>DeadLine</th>
+													<th class="hidden">Return</th>
+													
+													
+												</tr>
+											</tfoot>
+										</table>
+										</div>
+									</div>
+								</div>
+								<!-- hidden member table end-->
 							</div>
                         </div>
                     </div>
@@ -196,7 +345,7 @@
                         <div class="col-sm-6">
 
                             <p class="social">
-                                <a href="https://github.com/UlisesFS-ISC" class="external instagram" ><i class="fa fa-github"></i></a>
+                                <a href="https://github.com/UlisesFS-ISC" class="external facebook" ><i class="fa fa-github"></i></a>
                                 <a href="mailto:lexsius@hotmail.com" class="email" ><i class="fa fa-envelope"></i></a>
                             </p>
                         </div>
